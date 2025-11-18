@@ -1,0 +1,29 @@
+# Build artifacts (Stack & Cabal)
+.stack-work/
+dist/
+dist-newstyle/
+
+# Object/interface files
+*.o
+*.hi
+*.chi
+*.dyn_o
+*.dyn_hi
+
+# Local Cabal files
+cabal.project.local
+cabal.project.local~
+.ghc.environment*
+*.cabal
+
+# Windows binaries that may be produced ad-hoc
+*.exe
+*.dll
+
+# IDE/editor
+.idea/
+.vscode/
+*.iml
+
+# Stack lockfile (optional): usually commit it if present
+# stack.yaml.lock
