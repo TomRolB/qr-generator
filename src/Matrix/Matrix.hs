@@ -4,16 +4,27 @@ module Matrix.Matrix (Matrix, Pixel(..), placePixels) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
+import Data.Maybe (fromMaybe)
 
-data Pixel = Black | White deriving (Show)
+data Pixel = Black | White
 data Direction = Up | Down
 type Coords = (Int, Int)
-data Matrix = Matrix { pixels :: Map Coords Pixel, size :: Int } deriving (Show)
+data Matrix = Matrix { pixels :: Map Coords Pixel, size :: Int }
 data PlacementState = PlacementState {
     matrix :: Matrix,
     coords :: Coords,
     transition :: Transition
 }
+
+instance Show Pixel where
+    show White = "W"
+    show Black = "B"
+
+instance Show Matrix where
+    show Matrix {pixels, size} = concatMap getPixelFromMap square where
+        getPixelFromMap coords = (++) " " $ newLine coords $ maybe "." show $ Map.lookup coords pixels
+        newLine (row, col) char = if col == 1 then "\n" ++ char else char 
+        square = liftA2 (,) [1..size] [1..size]
 
 
 getInitialState :: Int -> PlacementState
@@ -48,14 +59,14 @@ placeZigZaggingDownwards = placeDownAndRight $ placeLeft bottomBoundaryChecker
 --- Transition "proxies"
 
 topBoundaryChecker :: Transition
-topBoundaryChecker = Transition (\(row, col) limit -> 
+topBoundaryChecker = Transition (\(row, col) limit ->
     if row <= 0
     then runTransition (placeLeftTwice placeZigZaggingDownwards) (row, col) limit
     else runTransition placeZigZaggingUpwards (row, col) limit
   )
 
 bottomBoundaryChecker :: Transition
-bottomBoundaryChecker = Transition (\(row, col) limit -> 
+bottomBoundaryChecker = Transition (\(row, col) limit ->
     if row >= limit
     then runTransition (placeLeftTwice placeZigZaggingUpwards) (row, col) limit
     else runTransition placeZigZaggingDownwards (row, col) limit
