@@ -21,12 +21,6 @@ instance Show Pixel where
     show White = "W"
     show Black = "B"
 
--- instance Show Matrix where
---     show Matrix {pixels, size} = concatMap getPixelFromMap square where
---         getPixelFromMap coords = (++) " " $ newLine coords $ maybe "." show $ Map.lookup coords pixels
---         newLine (row, col) char = if col == 1 then "\n" ++ char else char 
---         square = liftA2 (,) [1..size] [1..size]
-
 instance Show Matrix where
     show Matrix {pixels, size} = unlines $ map createRow square where
         createRow = concatMap getPixelFromMap
