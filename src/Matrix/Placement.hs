@@ -1,32 +1,20 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedRecordDot #-}
-{-# LANGUAGE TupleSections #-}
-module Matrix.Matrix (Matrix, Pixel(..), placePixels) where
+
+module Matrix.Placement (placePixels) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
+import Matrix.Model (Coords, Matrix(..), Pixel)
 
-data Pixel = Black | White
-data Direction = Up | Down
-type Coords = (Int, Int)
-data Matrix = Matrix { pixels :: Map Coords Pixel, size :: Int }
+newtype Transition = Transition { runTransition :: Coords -> Int -> (Coords, Transition) }
+
 data PlacementState = PlacementState {
     matrix :: Matrix,
     coords :: Coords,
     transition :: Transition
 }
-
-instance Show Pixel where
-    show White = "W"
-    show Black = "B"
-
-instance Show Matrix where
-    show Matrix {pixels, size} = unlines $ map createRow square where
-        createRow = concatMap getPixelFromMap
-        getPixelFromMap coords = (++) " " $ maybe "." show $ Map.lookup coords pixels
-        square = [[(row, col) | col <- [1..size]] | row <- [1..size]]
-
 
 getInitialState :: Int -> PlacementState
 getInitialState size = PlacementState {
@@ -44,8 +32,6 @@ placePixel(PlacementState { matrix = matrix, coords = coords, transition = trans
     updatedMatrix = matrix { pixels = Map.insert coords pixel matrix.pixels }
     (nextCoords, nextTransition) = runTransition transition coords matrix.size
 
-newtype Transition = Transition { runTransition :: Coords -> Int -> (Coords, Transition) }
-
 --- Transition chains
 
 placeLeftTwice :: Transition -> Transition
@@ -61,7 +47,7 @@ placeZigZaggingDownwards = placeDownAndRight $ placeLeft bottomBoundaryChecker
 
 topBoundaryChecker :: Transition
 topBoundaryChecker = Transition (\(row, col) limit ->
-    if row <= 0
+    if row <= 1
     then runTransition (placeLeftTwice placeZigZaggingDownwards) (row, col) limit
     else runTransition placeZigZaggingUpwards (row, col) limit
   )

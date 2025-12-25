@@ -8,7 +8,9 @@ dependencies:
 library:
   source-dirs: src
   exposed-modules:
-    - Matrix.Matrix
+    - Matrix.Model
+    - Matrix.Placement
+    - Matrix.Patterns
 
 executables:
   qr-generator-exe:
