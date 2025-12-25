@@ -1,10 +1,16 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 
-module Matrix.Patterns (addFinderPatterns) where
+module Matrix.Patterns (addPatterns) where
 
 import Matrix.Model
 import qualified Data.Map as Map
 import Data.Function ((&))
+
+addPatterns :: Matrix -> Matrix
+addPatterns matrix = 
+    matrix
+        & addFinderPatterns
+        & addSeparators
 
 addFinderPatterns :: Matrix -> Matrix
 addFinderPatterns matrix =
@@ -20,6 +26,16 @@ addFinderPattern centerCoords matrix =
         & addWhiteRing centerCoords
         & addBlackRing centerCoords
 
+addSeparators :: Matrix -> Matrix
+addSeparators matrix = 
+    matrix
+        & addLine (8, 8) (-1, 0) 8
+        & addLine (8, 7) (0, -1) 7
+        & addLine (8, matrix.size - 7) (-1, -0) 8
+        & addLine (8, matrix.size - 7) (0, 1) 7
+        & addLine (matrix.size - 7, 8) (1, 0) 8
+        & addLine (matrix.size - 7, 8) (0, -1) 7
+
 addBlackCenter :: Coords -> Matrix -> Matrix
 addBlackCenter (row, col) matrix = setPixels matrix center Black where
     center = liftA2 (,) [row-1..row+1] [col-1..col+1]
@@ -32,10 +48,13 @@ addBlackRing :: Coords -> Matrix -> Matrix
 addBlackRing (row, col) matrix = setPixels matrix outerRing Black where
     outerRing = generateRing (row, col) 3
 
+addLine :: Coords -> Coords -> Int -> Matrix -> Matrix
+addLine fromCoords deltaCoords len matrix = setPixels matrix line White where
+    line = generateLine fromCoords deltaCoords len
+
 setPixels :: Matrix -> [Coords] -> Pixel -> Matrix
 setPixels matrix coords color = matrix { pixels = newPixels } where
     newPixels = foldr (`Map.insert` color) matrix.pixels coords
-
 
 generateRing :: Coords -> Int -> [Coords]
 generateRing (row, col) radius = upper ++ lower ++ right ++ left where

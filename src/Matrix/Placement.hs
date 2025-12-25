@@ -16,16 +16,16 @@ data PlacementState = PlacementState {
     transition :: Transition
 }
 
-getInitialState :: Int -> PlacementState
-getInitialState size = PlacementState {
-    matrix = Matrix { pixels = Map.empty, size },
-    coords = (size, size),
+getInitialState :: Matrix -> PlacementState
+getInitialState matrix = PlacementState {
+    matrix,
+    coords = (matrix.size, matrix.size),
     transition = placeLeft placeZigZaggingUpwards
 }
 
-placePixels :: [Pixel] -> Int -> Matrix
-placePixels pixelStream size = matrix $ foldl placePixel initialState pixelStream where
-    initialState = getInitialState size
+placePixels :: [Pixel] -> Matrix -> Matrix
+placePixels pixelStream originalMatrix = matrix $ foldl placePixel initialState pixelStream where
+    initialState = getInitialState originalMatrix
 
 placePixel :: PlacementState -> Pixel -> PlacementState
 placePixel(PlacementState { matrix = matrix, coords = coords, transition = transition }) pixel = PlacementState { matrix = updatedMatrix, coords = nextCoords, transition = nextTransition } where

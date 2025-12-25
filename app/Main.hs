@@ -2,10 +2,11 @@ module Main where
 
 import qualified Data.Map as Map
 import Matrix.Model (Matrix(..), Pixel(..))
-import Matrix.Patterns (addFinderPatterns)
+import Matrix.Patterns (addPatterns)
+import Matrix.Placement (placePixels)
 
 main :: IO ()
 main = do
-    -- print (Matrix.placePixels [Black, White, White, Black, Black, White, White, White, White, Black, White, Black, Black, Black, Black, Black] 5)
+    let pixels = [Black, White, White, Black, Black, White, White, White, White, Black, White, Black, Black, Black, Black, Black]
     let matrix = Matrix { pixels = Map.empty, size = 21 }
-    print $ addFinderPatterns matrix
+    print $ placePixels pixels $ addPatterns matrix
