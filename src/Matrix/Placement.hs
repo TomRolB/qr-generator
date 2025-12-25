@@ -20,7 +20,7 @@ getInitialState :: Matrix -> PlacementState
 getInitialState matrix = PlacementState {
     matrix,
     coords = (matrix.size, matrix.size),
-    transition = placeLeft placeZigZaggingUpwards
+    transition = patternSkipper matrix $ placeLeft placeZigZaggingUpwards
 }
 
 placePixels :: [Pixel] -> Matrix -> Matrix
@@ -28,9 +28,10 @@ placePixels pixelStream originalMatrix = matrix $ foldl placePixel initialState 
     initialState = getInitialState originalMatrix
 
 placePixel :: PlacementState -> Pixel -> PlacementState
-placePixel(PlacementState { matrix = matrix, coords = coords, transition = transition }) pixel = PlacementState { matrix = updatedMatrix, coords = nextCoords, transition = nextTransition } where
-    updatedMatrix = matrix { pixels = Map.insert coords pixel matrix.pixels }
-    (nextCoords, nextTransition) = runTransition transition coords matrix.size
+placePixel(PlacementState { matrix = matrix, coords = coords, transition = transition }) pixel = 
+    PlacementState { matrix = updatedMatrix, coords = nextCoords, transition = nextTransition } where
+        updatedMatrix = matrix { pixels = Map.insert coords pixel matrix.pixels }
+        (nextCoords, nextTransition) = runTransition transition coords matrix.size
 
 --- Transition chains
 
@@ -44,6 +45,14 @@ placeZigZaggingDownwards :: Transition
 placeZigZaggingDownwards = placeDownAndRight $ placeLeft bottomBoundaryChecker
 
 --- Transition "proxies"
+
+patternSkipper :: Matrix -> Transition -> Transition
+patternSkipper matrix (Transition step) = Transition $ \coords limit ->
+    let (nextCoords, nextState) = step coords limit
+        wrappedNext = patternSkipper matrix nextState
+    in if Map.member nextCoords matrix.pixels
+            then runTransition wrappedNext nextCoords limit
+            else (nextCoords, wrappedNext)
 
 topBoundaryChecker :: Transition
 topBoundaryChecker = Transition (\(row, col) limit ->

@@ -7,6 +7,9 @@ import Matrix.Placement (placePixels)
 
 main :: IO ()
 main = do
-    let pixels = [Black, White, White, Black, Black, White, White, White, White, Black, White, Black, Black, Black, Black, Black]
+    let pixels = [ Black, White, White, Black, Black, White, White, White
+                 , White, Black, White, Black, Black, Black, Black, Black
+                 , White, Black, Black, Black, Black, Black, White, Black
+                 , Black, Black, Black, White, Black, White, Black, White]
     let matrix = Matrix { pixels = Map.empty, size = 21 }
     print $ placePixels pixels $ addPatterns matrix
