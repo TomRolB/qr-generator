@@ -11,6 +11,7 @@ addPatterns matrix =
     matrix
         & addFinderPatterns
         & addSeparators
+        & addTimingPatterns
 
 addFinderPatterns :: Matrix -> Matrix
 addFinderPatterns matrix =
@@ -36,6 +37,12 @@ addSeparators matrix =
         & addLine (matrix.size - 7, 8) (1, 0) 8
         & addLine (matrix.size - 7, 8) (0, -1) 7
 
+addTimingPatterns :: Matrix -> Matrix
+addTimingPatterns matrix = 
+    matrix
+        & addLineAlternating (7, 9) (0, 1) (matrix.size - 16)
+        & addLineAlternating (9, 7) (1, 0) (matrix.size - 16)
+
 addBlackCenter :: Coords -> Matrix -> Matrix
 addBlackCenter (row, col) matrix = setPixels matrix center Black where
     center = liftA2 (,) [row-1..row+1] [col-1..col+1]
@@ -52,9 +59,19 @@ addLine :: Coords -> Coords -> Int -> Matrix -> Matrix
 addLine fromCoords deltaCoords len matrix = setPixels matrix line White where
     line = generateLine fromCoords deltaCoords len
 
+addLineAlternating :: Coords -> Coords -> Int -> Matrix -> Matrix
+addLineAlternating fromCoords deltaCoords len matrix = setPixelsWithColors matrix line alternatingColors where
+    line = generateLine fromCoords deltaCoords len
+    alternatingColors = cycle [Black, White]
+
 setPixels :: Matrix -> [Coords] -> Pixel -> Matrix
 setPixels matrix coords color = matrix { pixels = newPixels } where
     newPixels = foldr (`Map.insert` color) matrix.pixels coords
+
+setPixelsWithColors :: Matrix -> [Coords] -> [Pixel] -> Matrix
+setPixelsWithColors matrix coords colors = matrix { pixels = newPixels } where
+    newPixels = foldr (\(coords, color) -> Map.insert coords color) matrix.pixels pixelsWithColors
+    pixelsWithColors = zip coords colors
 
 generateRing :: Coords -> Int -> [Coords]
 generateRing (row, col) radius = upper ++ lower ++ right ++ left where
