@@ -7,7 +7,7 @@ import qualified Data.Map as Map
 import Data.Function ((&))
 
 addPatterns :: Matrix -> Matrix
-addPatterns matrix = 
+addPatterns matrix =
     matrix
         & addFinderPatterns
         & addSeparators
@@ -16,19 +16,19 @@ addPatterns matrix =
 addFinderPatterns :: Matrix -> Matrix
 addFinderPatterns matrix =
     matrix
-        & addFinderPattern (4, 4) 
-        & addFinderPattern (4, matrix.size - 3) 
-        & addFinderPattern (matrix.size - 3, 4) 
+        & addFinderPattern (4, 4)
+        & addFinderPattern (4, matrix.size - 3)
+        & addFinderPattern (matrix.size - 3, 4)
 
 addFinderPattern :: Coords -> Matrix -> Matrix
-addFinderPattern centerCoords matrix = 
+addFinderPattern centerCoords matrix =
     matrix
         & addBlackCenter centerCoords
         & addWhiteRing centerCoords
         & addBlackRing centerCoords
 
 addSeparators :: Matrix -> Matrix
-addSeparators matrix = 
+addSeparators matrix =
     matrix
         & addLine (8, 8) (-1, 0) 8
         & addLine (8, 7) (0, -1) 7
@@ -38,7 +38,7 @@ addSeparators matrix =
         & addLine (matrix.size - 7, 8) (0, -1) 7
 
 addTimingPatterns :: Matrix -> Matrix
-addTimingPatterns matrix = 
+addTimingPatterns matrix =
     matrix
         & addLineAlternating (7, 9) (0, 1) (matrix.size - 16)
         & addLineAlternating (9, 7) (1, 0) (matrix.size - 16)
@@ -70,7 +70,7 @@ setPixels matrix coords color = matrix { pixels = newPixels } where
 
 setPixelsWithColors :: Matrix -> [Coords] -> [Pixel] -> Matrix
 setPixelsWithColors matrix coords colors = matrix { pixels = newPixels } where
-    newPixels = foldr (\(coords, color) -> Map.insert coords color) matrix.pixels pixelsWithColors
+    newPixels = foldr (uncurry Map.insert) matrix.pixels pixelsWithColors
     pixelsWithColors = zip coords colors
 
 generateRing :: Coords -> Int -> [Coords]
