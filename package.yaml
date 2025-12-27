@@ -4,6 +4,7 @@ version: 0.1.0.0
 dependencies:
   - base >= 4.7 && < 5
   - containers
+  - tasty-golden
 
 library:
   source-dirs: src
@@ -18,3 +19,14 @@ executables:
     source-dirs:         app
     dependencies:
       - qr-generator
+
+tests:
+  qr-generator-test:
+    main:                Spec.hs
+    source-dirs:         test
+    dependencies:
+      - qr-generator     
+      - hspec            
+      - tasty            
+      - tasty-golden     
+      - bytestring
