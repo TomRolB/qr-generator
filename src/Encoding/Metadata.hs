@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 
+module Encoding.Metadata where
+
 import Shared.Model (Mode(..), QrConfig(..))
 import Encoding.Model (Bit(..))
 import Numeric (showBin)
