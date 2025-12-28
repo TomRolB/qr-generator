@@ -13,7 +13,7 @@ test_matrixPatternsAndPlacement :: TestTree
 test_matrixPatternsAndPlacement = testGroup "Matrix Patterns and Placement Tests"
   [  goldenVsString
      "Creates patterns and places data bits"
-     "test/matrix/patterns_and_placement.txt"
+     "test/Matrix/patterns_and_placement.txt"
      generateMatrix
   ]
 

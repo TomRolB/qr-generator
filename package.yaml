@@ -13,6 +13,11 @@ library:
     - Matrix.Model
     - Matrix.Placement
     - Matrix.Patterns
+    - Encoding.Metadata
+    - Encoding.Data
+    - Shared.Model
+    - Shared.Error
+    - Utils.BitUtils
 
 executables:
   qr-generator-exe:

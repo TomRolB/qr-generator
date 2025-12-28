@@ -6,3 +6,5 @@ import Control.Monad.Trans.Except (Except)
 
 type AppM a = Except AppError a
 data Bit = Zero | One
+
+

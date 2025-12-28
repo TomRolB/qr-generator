@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 
-module Encoding.Metadata where
+module Encoding.Metadata (encodeMetadata) where
 
 import Shared.Model (Mode(..), QrConfig(..))
 import Encoding.Model (Bit(..))
 import Numeric (showBin)
 import Utils.BitUtils
 
-encodeData :: String -> QrConfig -> [Bit]
-encodeData message config = modeIndicator ++ characterCountIndicator where
+encodeMetadata :: String -> QrConfig -> [Bit]
+encodeMetadata message config = modeIndicator ++ characterCountIndicator where
     modeIndicator = getModeIndicator config.mode
     characterCountIndicator = getCountWithPadding message config
 
