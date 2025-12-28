@@ -6,10 +6,13 @@ import Encoding.ConversionTables (toAlphanumericCode)
 import Data.Function ((&))
 import Control.Monad.Trans.Except (Except)
 
+alphanumericBinarySize = 11
+oddAlphanumericBinarySize = 6
+
 encodeAlphanumeric :: String -> AppM [Bit]
 encodeAlphanumeric message = do
     encodings <- traverse toAlphanumericCode message
-    return $ multiplyPairs encodings 11 -- What dictates the size?
+    return $ multiplyPairs encodings alphanumericBinarySize -- What dictates the size?
 
 multiplyPairs :: [Int] -> Int -> [Bit]
 multiplyPairs (x1:x2:xs) binarySize = 
@@ -18,4 +21,4 @@ multiplyPairs (x1:x2:xs) binarySize =
         & padWithZeroes binarySize
         & (++ multiplyPairs xs binarySize)
 
-multiplyPairs (x1:_) binarySize = padWithZeroes 6 $ numAsBits x1
+multiplyPairs (x1:_) binarySize = padWithZeroes oddAlphanumericBinarySize $ numAsBits x1

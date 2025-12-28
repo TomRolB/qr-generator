@@ -15,16 +15,19 @@ import Control.Monad.Trans.Except (runExcept)
 
 test_dataEncoding :: TestTree
 test_dataEncoding = testGroup "Data encoding tests"
-  [  goldenVsString
-     "Encodes a message"
-     "test/Encoding/encoding.txt"
-     encode
+  [ goldenVsString
+      "Encodes a message"
+      "test/Encoding/encoding.txt"
+      (encode "HELLO WORLD")
+  , goldenVsString
+      "Fails to encode lowercase"
+      "test/Encoding/lowercase_error.txt"
+      (encode "hello world")
   ]
 
-encode :: IO LBS.ByteString
-encode = do
+encode :: String -> IO LBS.ByteString
+encode message = do
   let qrConfig = QrConfig { mode = Alphanumeric, version = 1 }
-  let message = "HELLO WORLD"
   let metadataBits = encodeMetadata message qrConfig
   let eitherErrorOrData = runExcept $ encodeAlphanumeric message
   case eitherErrorOrData of
