@@ -31,3 +31,5 @@ tests:
       - tasty            
       - tasty-golden     
       - bytestring
+    build-tools:
+      - tasty-discover:tasty-discover

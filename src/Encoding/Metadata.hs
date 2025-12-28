@@ -39,3 +39,5 @@ getCharacterCountIndicatorSize config = case config of
     QrConfig Kanji         v | v <= 26  -> 10
     QrConfig Kanji         v | v <= 40  -> 12
     QrConfig _ _ -> 14 -- Unreachable (version validated before this function)
+
+-- TODO: better to Handle the unreachable case
