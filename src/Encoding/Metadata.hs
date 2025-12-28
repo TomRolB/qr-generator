@@ -5,6 +5,7 @@ module Encoding.Metadata where
 import Shared.Model (Mode(..), QrConfig(..))
 import Encoding.Model (Bit(..))
 import Numeric (showBin)
+import Utils.BitUtils
 
 encodeData :: String -> QrConfig -> [Bit]
 encodeData message config = modeIndicator ++ characterCountIndicator where
@@ -18,8 +19,7 @@ getModeIndicator Byte         = asBits "0100"
 getModeIndicator Kanji        = asBits "1000"
 
 getCountWithPadding :: String -> QrConfig -> [Bit]
-getCountWithPadding message qrConfig =  extraBits ++ mainBits where
-    extraBits = replicate (size - length mainBits) Zero
+getCountWithPadding message qrConfig = padWithZeroes size mainBits where
     mainBits = asBits $ (`showBin` "") $ length message
     size = getCharacterCountIndicatorSize qrConfig
 
@@ -39,9 +39,3 @@ getCharacterCountIndicatorSize config = case config of
     QrConfig Kanji         v | v <= 26  -> 10
     QrConfig Kanji         v | v <= 40  -> 12
     QrConfig _ _ -> 14 -- Unreachable (version validated before this function)
-
-asBits :: String -> [Bit]
-asBits = map asBit where
-    asBit '0' = Zero
-    asBit '1' = One
-
