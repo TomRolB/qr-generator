@@ -1,4 +1,4 @@
-module Utils.BitUtils (asBits, numAsBits, padWithZeroes, asString) where
+module Utils.BitUtils (asBits, numAsBits, padWithZeroes, padWithZeroesRight, asString) where
 import Encoding.Model (Bit (..))
 import Numeric (showBin)
 
@@ -14,6 +14,10 @@ numAsBits num = asBits $ showBin num ""
 
 padWithZeroes :: Int -> [Bit] -> [Bit]
 padWithZeroes finalSize mainBits = extraBits ++ mainBits where
+    extraBits = replicate (finalSize - length mainBits) Zero
+
+padWithZeroesRight :: Int -> [Bit] -> [Bit]
+padWithZeroesRight finalSize mainBits = mainBits ++ extraBits where
     extraBits = replicate (finalSize - length mainBits) Zero
 
 asString :: [Bit] -> String

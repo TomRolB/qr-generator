@@ -2,10 +2,12 @@
 
 module Encoding.Metadata (encodeMetadata) where
 
-import Shared.Model (Mode(..), QrConfig(..))
+import Shared.Model (Mode(..), ErrorCorrectionLevel(..), QrConfig(..))
 import Encoding.Model (Bit(..))
 import Numeric (showBin)
 import Utils.BitUtils
+
+-- TODO: handle corner cases instead of considering them unreachable
 
 encodeMetadata :: String -> QrConfig -> [Bit]
 encodeMetadata message config = modeIndicator ++ characterCountIndicator where
@@ -25,19 +27,17 @@ getCountWithPadding message qrConfig = padWithZeroes size mainBits where
 
 getCharacterCountIndicatorSize :: QrConfig -> Int
 getCharacterCountIndicatorSize config = case config of
-    --       Mode          Version         Size
-    QrConfig Numeric       v | v <= 9   -> 10
-    QrConfig Numeric       v | v <= 26  -> 12
-    QrConfig Numeric       v | v <= 40  -> 14
-    QrConfig Alphanumeric  v | v <= 9   -> 9
-    QrConfig Alphanumeric  v | v <= 26  -> 11
-    QrConfig Alphanumeric  v | v <= 40  -> 13
-    QrConfig Byte          v | v <= 9   -> 8
-    QrConfig Byte          v | v <= 26  -> 16
-    QrConfig Byte          v | v <= 40  -> 16
-    QrConfig Kanji         v | v <= 9   -> 8
-    QrConfig Kanji         v | v <= 26  -> 10
-    QrConfig Kanji         v | v <= 40  -> 12
-    QrConfig _ _ -> 14 -- Unreachable (version validated before this function)
-
--- TODO: better to Handle the unreachable case
+    --       Mode          Version  ECLevel               Size
+    QrConfig Numeric       v        _       | v <= 9   -> 10
+    QrConfig Numeric       v        _       | v <= 26  -> 12
+    QrConfig Numeric       v        _       | v <= 40  -> 14
+    QrConfig Alphanumeric  v        _       | v <= 9   -> 9
+    QrConfig Alphanumeric  v        _       | v <= 26  -> 11
+    QrConfig Alphanumeric  v        _       | v <= 40  -> 13
+    QrConfig Byte          v        _       | v <= 9   -> 8
+    QrConfig Byte          v        _       | v <= 26  -> 16
+    QrConfig Byte          v        _       | v <= 40  -> 16
+    QrConfig Kanji         v        _       | v <= 9   -> 8
+    QrConfig Kanji         v        _       | v <= 26  -> 10
+    QrConfig Kanji         v        _       | v <= 40  -> 12
+    QrConfig {} -> 14 -- Unreachable (version validated before this function)

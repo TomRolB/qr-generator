@@ -15,6 +15,7 @@ library:
     - Matrix.Patterns
     - Encoding.Metadata
     - Encoding.Data
+    - Encoding.Filler
     - Shared.Model
     - Shared.Error
     - Utils.BitUtils
