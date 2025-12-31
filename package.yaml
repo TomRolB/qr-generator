@@ -19,6 +19,7 @@ library:
     - Shared.Model
     - Shared.Error
     - Utils.BitUtils
+    - Encoding.Encoding
 
 executables:
   qr-generator-exe:

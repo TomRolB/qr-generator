@@ -1,4 +1,4 @@
-module Encoding.Filler (getFillerBits) where
+module Encoding.Filler (getTerminator, padUntilMultipleOfEight, getPaddingBytes, getTotalCodeWords) where
 
 import Shared.Model (QrConfig (..), ErrorCorrectionLevel (..))
 import Utils.BitUtils (padWithZeroesRight, asBits)
@@ -9,33 +9,23 @@ maxTerminatorSize = 4
 padByte236 = asBits "11101100"
 padByte17 = asBits "00010001"
 
-getFillerBits :: QrConfig -> [Bit] -> [Bit]
-getFillerBits config bits =
-    bits 
-        & addTerminator totalBits
-        & padUntilMultipleOfEight
-        & addPadBytes totalBits
-    where
-        totalBits = 8 * getTotalCodeWords config
+getTerminator :: Int -> Int -> [Bit]
+getTerminator requiredSize currentSize =
+    take (requiredSize - currentSize) $ replicate maxTerminatorSize Zero
 
-addTerminator :: Int -> [Bit] -> [Bit]
-addTerminator requiredSize bits = bits ++ terminator where
-    terminator = take (requiredSize - currentSize) $ replicate maxTerminatorSize Zero
-    currentSize = length bits
+padUntilMultipleOfEight :: Int -> [Bit]
+padUntilMultipleOfEight currentSize = replicate (nextMultiple - currentSize) Zero where
+    nextMultiple = getNextMultiple currentSize
 
-padUntilMultipleOfEight :: [Bit] -> [Bit]
-padUntilMultipleOfEight bits = padWithZeroesRight nextMultiple bits where
-    nextMultiple = getNextMultiple $ length bits
-
-addPadBytes :: Int -> [Bit] -> [Bit]
-addPadBytes requiredSize bits = bits ++ padBytes where
-    padBytes = take (numBytes * 8) $ cycle $ padByte236 ++ padByte17
-    numBytes = (requiredSize - length bits) `div` 8
+getPaddingBytes :: Int -> Int -> [Bit]
+getPaddingBytes requiredSize currentSize = padBytes where
+    padBytes = take numBits $ cycle $ padByte236 ++ padByte17
+    numBits = requiredSize - currentSize
 
 getNextMultiple :: Int -> Int
 getNextMultiple num
     | num `mod` 8 == 0 = num
-    | otherwise    = getNextMultiple $ num + 1
+    | otherwise        = getNextMultiple $ num + 1
 
 -- TODO: add the rest of the cases and treat supposedly "unreachable" case
 

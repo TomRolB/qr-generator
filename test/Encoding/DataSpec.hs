@@ -10,33 +10,23 @@ import Shared.Model (QrConfig (..), Mode (Alphanumeric), ErrorCorrectionLevel (Q
 import Shared.Error (renderError)
 import Utils.BitUtils (asString)
 
-import Control.Monad.Trans.Except (runExcept)
-import Encoding.Filler (getFillerBits)
+import Control.Monad.Trans.Except (runExcept, runExceptT)
+import Encoding.Encoding (encode)
 
 test_dataEncoding :: TestTree
 test_dataEncoding = testGroup "Data encoding tests"
   [ goldenVsString
       "Encodes a message"
       "test/Encoding/encoding.txt"
-      (encode "HELLO WORLD")
+      (encode' "HELLO WORLD")
   , goldenVsString
       "Fails to encode lowercase"
       "test/Encoding/lowercase_error.txt"
-      (encode "hello world")
+      (encode' "hello world")
   ]
 
-encode :: String -> IO LBS.ByteString
-encode message = do
+encode' :: String -> IO LBS.ByteString
+encode' message = 
   let qrConfig = QrConfig { mode = Alphanumeric, version = 1, ecLevel = Quartile }
-
-  let result = runExcept $ do
-        dataBits     <- encodeAlphanumeric message
-        let metadata = encodeMetadata message qrConfig
-        let combined = metadata ++ dataBits
-        let withFiller = getFillerBits qrConfig combined
-        return $ asString withFiller
-
-  -- Finally, handle the single result point
-  case result of
-    Left err  -> return $ LBS.pack $ renderError err
-    Right str -> return $ LBS.pack str
+      result   = runExcept $ encode qrConfig message
+  in return $ LBS.pack $ either renderError asString result

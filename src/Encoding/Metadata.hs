@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 
-module Encoding.Metadata (encodeMetadata) where
+module Encoding.Metadata (encodeMetadata, getModeIndicator, getCountWithPadding) where
 
 import Shared.Model (Mode(..), ErrorCorrectionLevel(..), QrConfig(..))
 import Encoding.Model (Bit(..))
