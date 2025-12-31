@@ -1,64 +1,67 @@
-{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module Encoding.Encoding where
 
-import Encoding.Model (Bit, AppM)
-import Shared.Model (QrConfig (..))
 import Control.Monad.Trans.Except (runExcept)
 import Encoding.Data (encodeAlphanumeric)
-import Encoding.Metadata (encodeMetadata, getModeIndicator, getCountWithPadding)
-import Encoding.Filler (getTotalCodeWords, getTerminator, padUntilMultipleOfEight, getPaddingBytes)
+import Encoding.Filler (getPaddingBytes, getTerminator, getTotalCodeWords, padUntilMultipleOfEight)
+import Encoding.Metadata (encodeMetadata, getCountWithPadding, getModeIndicator)
+import Encoding.Model (AppM, Bit)
+import Shared.Model (QrConfig (..))
 import Utils.BitUtils (asString)
 
 data EncodingResult = EncodingResult
-    { modeIndicator      :: [Bit]
-    , charCountIndicator :: [Bit]
-    , encodedData        :: [Bit]
-    , terminator         :: [Bit]
-    , paddingBits        :: [Bit]
-    , paddingBytes       :: [Bit]
-    }
+  { modeIndicator :: [Bit],
+    charCountIndicator :: [Bit],
+    encodedData :: [Bit],
+    terminator :: [Bit],
+    paddingBits :: [Bit],
+    paddingBytes :: [Bit]
+  }
 
 encode :: QrConfig -> String -> AppM [Bit]
 encode qrConfig message = do
-    encoded <- encodeIntoParts qrConfig message
-    return $ ensembleEncoding encoded
+  encoded <- encodeIntoParts qrConfig message
+  return $ ensembleEncoding encoded
 
 encodeIntoParts :: QrConfig -> String -> AppM EncodingResult
-encodeIntoParts qrConfig message =  do
-    encodedData            <- encodeAlphanumeric message
-    
-    let modeIndicator      = getModeIndicator qrConfig.mode
-    let charCountIndicator = getCountWithPadding message qrConfig
-    let combined           = modeIndicator ++ charCountIndicator ++ encodedData
-    let combinedLen        = length combined
+encodeIntoParts qrConfig message = do
+  encodedData <- encodeAlphanumeric message
 
-    let totalBitsRequired  = 8 * getTotalCodeWords qrConfig
-    let terminator         = getTerminator totalBitsRequired combinedLen
+  let modeIndicator = getModeIndicator qrConfig.mode
+  let charCountIndicator = getCountWithPadding message qrConfig
+  let combined = modeIndicator ++ charCountIndicator ++ encodedData
+  let combinedLen = length combined
 
-    let withTerminator     = combined ++ terminator
-    let withTerminatorLen  = combinedLen + length terminator
-    let paddingBits        = padUntilMultipleOfEight withTerminatorLen
+  let totalBitsRequired = 8 * getTotalCodeWords qrConfig
+  let terminator = getTerminator totalBitsRequired combinedLen
 
-    let paddingBitsLen     = withTerminatorLen + length paddingBits
-    let paddingBytes       = getPaddingBytes totalBitsRequired paddingBitsLen
+  let withTerminator = combined ++ terminator
+  let withTerminatorLen = combinedLen + length terminator
+  let paddingBits = padUntilMultipleOfEight withTerminatorLen
 
-    return EncodingResult {
-        modeIndicator,
+  let paddingBitsLen = withTerminatorLen + length paddingBits
+  let paddingBytes = getPaddingBytes totalBitsRequired paddingBitsLen
+
+  return
+    EncodingResult
+      { modeIndicator,
         charCountIndicator,
         encodedData,
         terminator,
         paddingBits,
         paddingBytes
-    }
+      }
 
 ensembleEncoding :: EncodingResult -> [Bit]
-ensembleEncoding r = concatMap ($ r) 
-  [ modeIndicator
-  , charCountIndicator
-  , encodedData
-  , terminator
-  , paddingBits
-  , paddingBytes
-  ]
+ensembleEncoding r =
+  concatMap
+    ($ r)
+    [ modeIndicator,
+      charCountIndicator,
+      encodedData,
+      terminator,
+      paddingBits,
+      paddingBytes
+    ]
