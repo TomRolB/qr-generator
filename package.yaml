@@ -39,8 +39,6 @@ tests:
       - tasty            
       - tasty-golden     
       - bytestring
-      - pandoc
-      - pandoc-types
       - text
     build-tools:
       - tasty-discover:tasty-discover
