@@ -4,8 +4,8 @@ version: 0.1.0.0
 dependencies:
   - base >= 4.7 && < 5
   - containers
-  - tasty-golden
   - transformers
+  - split
 
 library:
   source-dirs: src
@@ -16,10 +16,11 @@ library:
     - Encoding.Metadata
     - Encoding.Data
     - Encoding.Filler
+    - Encoding.Model
+    - Encoding.Encoding
     - Shared.Model
     - Shared.Error
     - Utils.BitUtils
-    - Encoding.Encoding
 
 executables:
   qr-generator-exe:
@@ -38,5 +39,8 @@ tests:
       - tasty            
       - tasty-golden     
       - bytestring
+      - pandoc
+      - pandoc-types
+      - text
     build-tools:
       - tasty-discover:tasty-discover

@@ -2,6 +2,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
 module Encoding.Encoding where
+
 import Encoding.Model (Bit, AppM)
 import Shared.Model (QrConfig (..))
 import Control.Monad.Trans.Except (runExcept)

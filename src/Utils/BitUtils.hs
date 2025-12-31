@@ -1,6 +1,8 @@
-module Utils.BitUtils (asBits, numAsBits, padWithZeroes, padWithZeroesRight, asString) where
+module Utils.BitUtils (asBits, numAsBits, padWithZeroes, padWithZeroesRight, asString, asSpacedString) where
 import Encoding.Model (Bit (..))
 import Numeric (showBin)
+import Data.List (intercalate)
+import Data.List.Split (chunksOf)
 
 asBits :: String -> [Bit]
 asBits = map asBit
@@ -24,3 +26,7 @@ asString :: [Bit] -> String
 asString = concatMap asBitChar where
     asBitChar Zero = ['0']
     asBitChar One  = ['1']
+
+asSpacedString :: [Bit] -> String
+asSpacedString bits =
+    unwords $ chunksOf 8 (asString bits)

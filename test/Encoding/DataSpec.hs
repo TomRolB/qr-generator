@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Encoding.DataSpec where
 
 import Test.Tasty (defaultMain, testGroup, TestTree)
@@ -8,10 +10,17 @@ import Encoding.Metadata (encodeMetadata)
 import Encoding.Data (encodeAlphanumeric)
 import Shared.Model (QrConfig (..), Mode (Alphanumeric), ErrorCorrectionLevel (Quartile))
 import Shared.Error (renderError)
-import Utils.BitUtils (asString)
+import Utils.BitUtils (asSpacedString)
 
 import Control.Monad.Trans.Except (runExcept, runExceptT)
-import Encoding.Encoding (encode)
+import Encoding.Model (Bit)
+import Encoding.Encoding (encodeIntoParts, EncodingResult (..))
+
+import qualified Data.Text as T
+import Text.Pandoc (runPure, writeMarkdown, def, PandocPure, WriterOptions (writerExtensions))
+import Text.Pandoc.Builder (doc, simpleTable, plain, str)
+import Text.Pandoc.Options (extensionsFromList, Extension(Ext_pipe_tables))
+import qualified GHC.TypeError as T
 
 test_dataEncoding :: TestTree
 test_dataEncoding = testGroup "Data encoding tests"
@@ -28,5 +37,40 @@ test_dataEncoding = testGroup "Data encoding tests"
 encode' :: String -> IO LBS.ByteString
 encode' message = 
   let qrConfig = QrConfig { mode = Alphanumeric, version = 1, ecLevel = Quartile }
-      result   = runExcept $ encode qrConfig message
-  in return $ LBS.pack $ either renderError asString result
+      result   = runExcept $ encodeIntoParts qrConfig message
+  in return $ LBS.pack $ either renderError asMarkdownTable result
+
+
+asMarkdownTable :: EncodingResult -> String
+asMarkdownTable result = 
+  case runPure (buildTable result) of
+    Left _  -> "Error generating markdown"
+    Right t -> T.unpack t
+
+buildTable :: EncodingResult -> PandocPure T.Text
+buildTable result = writeMarkdown customOptions $ doc table 
+  where
+    customOptions = def { writerExtensions = extensionsFromList [Ext_pipe_tables] }
+    table = simpleTable (map (plain . str) ["Part", "Bitstream"]) 
+                        (map (map (plain . str . T.pack)) tableRows)
+    tableRows = zipWith (\l v -> [l, v]) labels (asBitLists result)
+    labels =
+      [ "Mode Indicator"
+      , "Character Count Indicator"
+      , "Encoded Data"
+      , "Terminator"
+      , "Padding Bits"
+      , "Padding Bytes"
+      ]
+
+asBitLists :: EncodingResult -> [String]
+asBitLists result = map (\field -> asSpacedString (field result)) bitParts 
+  where
+    bitParts = 
+      [ modeIndicator
+      , charCountIndicator
+      , encodedData
+      , terminator
+      , paddingBits
+      , paddingBytes
+      ]
