@@ -11,6 +11,13 @@
 Formatting is done with Ormolu via Stack:
 - `./scripts/format.sh`
 
+To verify formatting without modifying files (useful for CI):
+- `./scripts/format-check.sh`
+
+## Linting
+Linting is done with HLint via Stack:
+- `./scripts/lint.sh`
+
 ## Git hooks (recommended)
 This repo uses a repo-local hooks path so hooks are easy to install and consistent across machines.
 
