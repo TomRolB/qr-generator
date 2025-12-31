@@ -27,3 +27,6 @@ cabal.project.local~
 
 # Stack lockfile (optional): usually commit it if present
 # stack.yaml.lock
+
+# Test runner artifacts
+.hspec-failures

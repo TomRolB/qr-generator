@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-find src test -name "*.hs" | xargs stack exec ormolu -- -m inplace
+# Format Haskell sources using Ormolu.
+find src test -name "*.hs" -print0 | xargs -0 stack exec ormolu -- -m inplace

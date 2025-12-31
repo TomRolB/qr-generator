@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run formatter before each commit.
+# If formatting updates files, stage those updates so the commit includes them.
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+"$repo_root/scripts/format.sh"
+
+git add -u src test
