@@ -7,4 +7,4 @@ set -euo pipefail
 repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
-stack exec --package hlint hlint -- src test
+stack exec --package hlint -- hlint src test

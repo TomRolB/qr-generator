@@ -6,4 +6,4 @@ set -euo pipefail
 repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
-find src test -name "*.hs" -print0 | xargs -0 stack exec ormolu -- -m check
+find src test -name "*.hs" -print0 | xargs -0 stack exec --package ormolu -- ormolu -m check
