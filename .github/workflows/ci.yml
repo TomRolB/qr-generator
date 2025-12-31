@@ -38,10 +38,10 @@ jobs:
         run: stack build --test --no-run-tests
 
       - name: Format check (Ormolu)
-        run: ./scripts/format-check.sh
+        run: bash ./scripts/format-check.sh
 
       - name: Lint (HLint)
-        run: ./scripts/lint.sh
+        run: bash ./scripts/lint.sh
 
       - name: Run Tests
         run: stack test
