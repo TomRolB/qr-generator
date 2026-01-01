@@ -2,20 +2,13 @@
 
 module Encoding.DataSpec where
 
-import Control.Monad.Trans.Except (runExcept, runExceptT)
+import Control.Monad.Trans.Except (runExcept)
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import Data.List (transpose)
-import qualified Data.Text as T
-import Encoding.Data (encodeAlphanumeric)
 import Encoding.Encoding (EncodingResult (..), encodeIntoParts)
-import Encoding.Metadata (encodeMetadata)
-import Encoding.Model (Bit)
-import qualified GHC.TypeError as T
 import Shared.Error (renderError)
 import Shared.Model (ErrorCorrectionLevel (Quartile), Mode (Alphanumeric), QrConfig (..))
-import Test.Tasty (TestTree, defaultMain, testGroup)
+import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsString)
-import Text.Printf (printf)
 import Utils.BitUtils (asSpacedString)
 import Utils.TableFormatter (renderPipeTable)
 

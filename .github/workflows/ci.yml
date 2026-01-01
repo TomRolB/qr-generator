@@ -40,7 +40,7 @@ jobs:
       - name: Format check (Ormolu)
         run: bash ./scripts/format-check.sh
 
-      - name: Lint (HLint)
+      - name: Lint (HLint and GHC compiler)
         run: bash ./scripts/lint.sh
 
       - name: Run Tests

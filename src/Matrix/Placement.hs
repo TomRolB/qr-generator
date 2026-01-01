@@ -3,9 +3,7 @@
 
 module Matrix.Placement (placePixels) where
 
-import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Maybe (fromMaybe)
 import Matrix.Model (Coords, Matrix (..), Pixel)
 
 newtype Transition = Transition {runTransition :: Coords -> Int -> (Coords, Transition)}

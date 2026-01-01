@@ -1,6 +1,5 @@
 module Utils.BitUtils (asBits, numAsBits, padWithZeroes, padWithZeroesRight, asString, asSpacedString) where
 
-import Data.List (intercalate)
 import Data.List.Split (chunksOf)
 import Encoding.Model (Bit (..))
 import Numeric (showBin)
@@ -8,9 +7,11 @@ import Numeric (showBin)
 asBits :: String -> [Bit]
 asBits = map asBit
 
+-- | Should strictly be used with chars '0' and '1'. Any other character is defaulted to Zero.
 asBit :: Char -> Bit
 asBit '0' = Zero
 asBit '1' = One
+asBit _ = Zero
 
 numAsBits :: Int -> [Bit]
 numAsBits num = asBits $ showBin num ""

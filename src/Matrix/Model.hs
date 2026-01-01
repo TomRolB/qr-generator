@@ -7,8 +7,6 @@ import qualified Data.Map as Map
 
 data Pixel = Black | White
 
-data Direction = Up | Down
-
 type Coords = (Int, Int)
 
 data Matrix = Matrix {pixels :: Map Coords Pixel, size :: Int}

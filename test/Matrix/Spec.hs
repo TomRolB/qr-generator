@@ -5,7 +5,7 @@ import qualified Data.Map as Map
 import Matrix.Model (Matrix (..), Pixel (..))
 import Matrix.Patterns (addPatterns)
 import Matrix.Placement (placePixels)
-import Test.Tasty (TestTree, defaultMain, testGroup)
+import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsString)
 
 test_matrixPatternsAndPlacement :: TestTree
@@ -20,7 +20,7 @@ test_matrixPatternsAndPlacement =
 
 generateMatrix :: IO LBS.ByteString
 generateMatrix = do
-  let pixels =
+  let examplePixels =
         [ Black,
           White,
           White,
@@ -58,5 +58,5 @@ generateMatrix = do
           White
         ]
   let matrix = Matrix {pixels = Map.empty, size = 21}
-  let resultMatrix = show $ placePixels pixels $ addPatterns matrix
+  let resultMatrix = show $ placePixels examplePixels $ addPatterns matrix
   return (LBS.pack resultMatrix)

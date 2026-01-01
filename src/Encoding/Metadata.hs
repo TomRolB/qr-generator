@@ -4,7 +4,7 @@ module Encoding.Metadata (encodeMetadata, getModeIndicator, getCountWithPadding)
 
 import Encoding.Model (Bit (..))
 import Numeric (showBin)
-import Shared.Model (ErrorCorrectionLevel (..), Mode (..), QrConfig (..))
+import Shared.Model (Mode (..), QrConfig (..))
 import Utils.BitUtils
 
 -- TODO: handle corner cases instead of considering them unreachable

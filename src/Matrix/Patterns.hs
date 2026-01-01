@@ -89,5 +89,5 @@ generateRing (row, col) radius = upper ++ lower ++ right ++ left
     right = generateLine (row - radius, col + radius) (1, 0) (2 * radius)
 
 generateLine :: Coords -> Coords -> Int -> [Coords]
-generateLine (fromRow, fromCol) (deltaRow, deltaCol) size =
-  [(fromRow + deltaRow * x, fromCol + deltaCol * x) | x <- [0 .. size]]
+generateLine (fromRow, fromCol) (deltaRow, deltaCol) lineSize =
+  [(fromRow + deltaRow * x, fromCol + deltaCol * x) | x <- [0 .. lineSize]]

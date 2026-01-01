@@ -13,6 +13,7 @@ stack exec --package hlint -- hlint src test
 # Check for compiler warnings (unused imports, etc.) by treating them as errors.
 # This ensures the codebase stays clean of unused code.
 echo "Checking compiler warnings"
+stack clean
 stack build --test --no-run-tests --ghc-options="-Werror"
 
 echo "No linting errors or compiler warnings found"
