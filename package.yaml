@@ -42,3 +42,9 @@ tests:
       - text
     build-tools:
       - tasty-discover:tasty-discover
+
+ghc-options:
+  - -Wall
+  - -Wunused-imports
+  - -Wunused-matches
+  - -Wunused-binds

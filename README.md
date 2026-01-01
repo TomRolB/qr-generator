@@ -15,7 +15,7 @@ To verify formatting without modifying files (useful for CI):
 - `./scripts/format-check.sh`
 
 ## Linting
-Linting is done with HLint via Stack:
+Linting is done with HLint via Stack, and also checks for compiler warnings (unused imports, etc):
 - `./scripts/lint.sh`
 
 ## Git hooks (recommended)

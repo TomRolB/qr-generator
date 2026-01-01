@@ -1,14 +1,16 @@
 module Encoding.Filler (getTerminator, padUntilMultipleOfEight, getPaddingBytes, getTotalCodeWords) where
 
-import Data.Function ((&))
 import Encoding.Model (Bit (Zero))
 import Shared.Model (ErrorCorrectionLevel (..), QrConfig (..))
-import Utils.BitUtils (asBits, padWithZeroesRight)
+import Utils.BitUtils (asBits)
 
+maxTerminatorSize :: Int
 maxTerminatorSize = 4
 
+padByte236 :: [Bit]
 padByte236 = asBits "11101100"
 
+padByte17 :: [Bit]
 padByte17 = asBits "00010001"
 
 getTerminator :: Int -> Int -> [Bit]

@@ -3,13 +3,11 @@
 
 module Encoding.Encoding where
 
-import Control.Monad.Trans.Except (runExcept)
 import Encoding.Data (encodeAlphanumeric)
 import Encoding.Filler (getPaddingBytes, getTerminator, getTotalCodeWords, padUntilMultipleOfEight)
-import Encoding.Metadata (encodeMetadata, getCountWithPadding, getModeIndicator)
+import Encoding.Metadata (getCountWithPadding, getModeIndicator)
 import Encoding.Model (AppM, Bit)
 import Shared.Model (QrConfig (..))
-import Utils.BitUtils (asString)
 
 data EncodingResult = EncodingResult
   { modeIndicator :: [Bit],
@@ -37,7 +35,6 @@ encodeIntoParts qrConfig message = do
   let totalBitsRequired = 8 * getTotalCodeWords qrConfig
   let terminator = getTerminator totalBitsRequired combinedLen
 
-  let withTerminator = combined ++ terminator
   let withTerminatorLen = combinedLen + length terminator
   let paddingBits = padUntilMultipleOfEight withTerminatorLen
 
