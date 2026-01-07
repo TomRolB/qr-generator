@@ -1,4 +1,4 @@
-module ErrorCorrection.ECCodewords (dividePolynomials, getAntilog, getAntilogs, getLog, getLogs) where
+module ErrorCorrection.Polynomial (dividePolynomials, getAntilog, getAntilogs, getLog, getLogs) where
 
 import Data.Bits
 import qualified Data.Map as Map

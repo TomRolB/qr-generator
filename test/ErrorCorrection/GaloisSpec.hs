@@ -1,7 +1,7 @@
 module ErrorCorrection.GaloisSpec where
 
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import ErrorCorrection.ECCodewords (dividePolynomials, getAntilog, getAntilogs, getLog)
+import ErrorCorrection.Polynomial (dividePolynomials, getAntilog, getAntilogs, getLog)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsString)
 
