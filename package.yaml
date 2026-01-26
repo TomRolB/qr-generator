@@ -42,6 +42,8 @@ tests:
       - tasty-golden     
       - bytestring
       - text
+      - directory
+      - filepath
     build-tools:
       - tasty-discover:tasty-discover
 
